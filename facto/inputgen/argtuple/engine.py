@@ -11,11 +11,11 @@ from facto.inputgen.specs.model import Spec
 
 
 def reverse_topological_sort(graph):
-    def dfs(node, visited, strack):
+    def dfs(node, visited, stack):
         visited[node] = True
         for neig in graph[node]:
             if not visited[neig]:
-                dfs(neig, visited, strack)
+                dfs(neig, visited, stack)
         stack.append(node)
 
     visited = {node: False for node in graph}
