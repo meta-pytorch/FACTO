@@ -73,18 +73,12 @@ class TestMetaArgEngine(unittest.TestCase):
         engine = MetaArgEngine(outarg, ArgType.IntOpt, constraints, deps, True)
         ms = list(engine.gen(Attribute.OPTIONAL))  # focus is OPTIONAL
         self.assertEqual(len(ms), 1)
-        if sys.version_info >= (3, 11):
-            self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
-        else:
-            self.assertEqual(str(ms[0]), "Integer? None")
+        self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
 
         engine = MetaArgEngine(outarg, ArgType.IntOpt, constraints, deps, True)
         ms = list(engine.gen(Attribute.VALUE))  # focus is VALUE
         self.assertEqual(len(ms), 1)
-        if sys.version_info >= (3, 11):
-            self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
-        else:
-            self.assertEqual(str(ms[0]), "Integer? None")
+        self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
 
 
 if __name__ == "__main__":
