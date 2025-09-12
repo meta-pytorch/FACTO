@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import unittest
-
+import sys
 from facto.inputgen.argument.engine import MetaArgEngine
 from facto.inputgen.argument.type import ArgType
 from facto.inputgen.attribute.model import Attribute
@@ -73,12 +73,18 @@ class TestMetaArgEngine(unittest.TestCase):
         engine = MetaArgEngine(outarg, ArgType.IntOpt, constraints, deps, True)
         ms = list(engine.gen(Attribute.OPTIONAL))  # focus is OPTIONAL
         self.assertEqual(len(ms), 1)
-        self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
+        if sys.version_info >= (3, 11):
+            self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
+        else:
+            self.assertEqual(str(ms[0]), "Integer? None")
 
         engine = MetaArgEngine(outarg, ArgType.IntOpt, constraints, deps, True)
         ms = list(engine.gen(Attribute.VALUE))  # focus is VALUE
         self.assertEqual(len(ms), 1)
-        self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
+        if sys.version_info >= (3, 11):
+            self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
+        else:
+            self.assertEqual(str(ms[0]), "Integer? None")
 
 
 if __name__ == "__main__":
