@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import unittest
-import sys
+
 from facto.inputgen.argument.engine import MetaArgEngine
 from facto.inputgen.argument.type import ArgType
 from facto.inputgen.attribute.model import Attribute
