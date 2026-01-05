@@ -93,7 +93,7 @@ def combine_forward_and_model_inputs(
     model_args_ix = 0
 
     # Iterate over the input specification
-    for ix, inarg in enumerate(spec.inspec):
+    for inarg in spec.inspec:
         is_forward_input = is_forward_arg(spec, inarg)
         if inarg.kw:
             # If the argument is a keyword argument, check if it's a tensor or tensor list
