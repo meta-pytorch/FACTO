@@ -38,7 +38,7 @@ An argument of an op might depend on another argument. For example, an argument 
 ### Constraints
 
 A given constraint has 3 parts: an attribute, a suffix and a lambda function.
-We already went through the attributes. The suffix is a basic operation, like Equal (Eq), Not Equal (Ne), Less than (Lt), Greather than (Gt), etc.
+We already went through the attributes. The suffix is a basic operation, like Equal (Eq), Not Equal (Ne), Less than (Lt), Greater than (Gt), etc.
 The lambda function takes the dependencies (other arguments) as inputs, and outputs certain value. The constraint should then be read as: attribute suffix value. For example, if the attribute is Length, and suffix is Gt, and the lambda function outputs 4, then the constraint is saying that the Length > 4.
 
 ## Generation

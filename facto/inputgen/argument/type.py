@@ -45,6 +45,10 @@ class ArgType(str, Enum):
     StringOpt = "String?"
     MemoryFormat = "MemoryFormat"
 
+    def __str__(self):
+        cls_name = self.__class__.__name__
+        return f'{cls_name}.{self.name}'
+
     def is_tensor(self) -> bool:
         return self in [ArgType.Tensor, ArgType.TensorOpt]
 

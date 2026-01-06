@@ -19,7 +19,7 @@ from facto.inputgen.variable.type import (
 
 class Discrete:
     """
-    Representes a set of discrete values. Examples:
+    Represents a set of discrete values. Examples:
 
     >>> d = Discrete(['a','b','c'])
     >>> d.contains('a')
@@ -149,9 +149,9 @@ class Interval:
         self.upper_open = upper_open
 
     def __str__(self) -> str:
-        lower_braket = "(" if self.lower_open else "["
-        upper_braket = ")" if self.upper_open else "]"
-        return f"{lower_braket}{self.lower}, {self.upper}{upper_braket}"
+        lower_bracket = "(" if self.lower_open else "["
+        upper_bracket = ")" if self.upper_open else "]"
+        return f"{lower_bracket}{self.lower}, {self.upper}{upper_bracket}"
 
     def __eq__(self, other: "Interval") -> bool:
         return (
@@ -337,7 +337,7 @@ class Intervals:
 
     def set_upper(self, upper: Union[int, float], upper_open: bool = False) -> None:
         """Sets the upper bound, being open or closed depending on the flag. In other
-        words, it removes all values greather than the given value. It also removes the value
+        words, it removes all values greater than the given value. It also removes the value
         itself if upper_open is True."""
         for ix, r in enumerate(self.intervals):
             if r.upper < upper:
