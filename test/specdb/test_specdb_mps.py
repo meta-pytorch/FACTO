@@ -7,7 +7,6 @@
 import unittest
 
 import torch
-
 from base_test import BaseSpecDBTest
 from facto.inputgen.utils.config import TensorConfig
 

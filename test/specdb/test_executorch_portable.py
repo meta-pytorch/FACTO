@@ -9,7 +9,6 @@ import unittest
 from typing import Optional
 
 import torch
-
 from facto.inputgen.utils.config import TensorConfig
 from facto.modelgen.gen import OpModelGenerator
 from facto.specdb.db import SpecDictDB

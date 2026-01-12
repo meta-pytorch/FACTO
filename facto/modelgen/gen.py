@@ -8,7 +8,6 @@ import traceback
 from typing import Any, Dict, Generator, List, Optional, Tuple
 
 import torch.nn as nn
-
 from facto.inputgen.argtuple.gen import ArgumentTupleGenerator
 from facto.inputgen.specs.model import InArg, Spec
 from facto.inputgen.utils.config import TensorConfig

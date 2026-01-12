@@ -178,9 +178,9 @@ class TensorGenerator:
             tensor = self._apply_noncontiguity(tensor)
 
         # Ensure the final tensor has the expected size
-        assert (
-            tuple(tensor.size()) == original_size
-        ), f"Expected size {original_size}, got {tuple(tensor.size())}"
+        assert tuple(tensor.size()) == original_size, (
+            f"Expected size {original_size}, got {tuple(tensor.size())}"
+        )
 
         return tensor
 
