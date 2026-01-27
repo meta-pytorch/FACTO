@@ -5507,6 +5507,67 @@ SpecDB = [
         ],
         outspec=[OutArg(ArgType.Tensor)],
     ),
+    Spec(
+        op="lstm.data",  # (Tensor data, Tensor batch_sizes, Tensor[] hx, Tensor[] params, bool has_biases, int num_layers, float dropout, bool train, bool bidirectional) -> (Tensor, Tensor, Tensor)
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="data",
+                constraints=[
+                    cp.Dtype.In(lambda deps: dt._floating),
+                    cp.Rank.Eq(lambda deps: 2),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="batch_sizes",
+                constraints=[
+                    cp.Dtype.In(lambda deps: [torch.int64]),
+                    cp.Rank.Eq(lambda deps: 1),
+                ],
+            ),
+            InPosArg(
+                ArgType.TensorList,
+                name="hx",
+                deps=[0],
+                constraints=[
+                    cp.Length.Eq(lambda deps: 2),
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                ],
+            ),
+            InPosArg(
+                ArgType.TensorList,
+                name="params",
+                deps=[0],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                ],
+            ),
+            InPosArg(ArgType.Bool, name="has_biases"),
+            InPosArg(
+                ArgType.Int,
+                name="num_layers",
+                constraints=[
+                    cp.Value.Ge(lambda deps: 1),
+                ],
+            ),
+            InPosArg(
+                ArgType.Float,
+                name="dropout",
+                constraints=[
+                    cp.Value.Ge(lambda deps: 0.0),
+                    cp.Value.Le(lambda deps: 1.0),
+                ],
+            ),
+            InPosArg(ArgType.Bool, name="train"),
+            InPosArg(ArgType.Bool, name="bidirectional"),
+        ],
+        outspec=[
+            OutArg(ArgType.Tensor, name="output"),
+            OutArg(ArgType.Tensor, name="h_n"),
+            OutArg(ArgType.Tensor, name="c_n"),
+        ],
+    ),
 ]
 
 
