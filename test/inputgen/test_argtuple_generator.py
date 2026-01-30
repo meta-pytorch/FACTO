@@ -31,8 +31,8 @@ class TestArgumentTupleGenerator(unittest.TestCase):
                 self.assertTrue(dim >= -t.dim())
                 self.assertTrue(dim < t.dim())
 
-    def test_gen(self):
-        spec = Spec(
+    def get_spec(self) -> Spec:
+        return Spec(
             op="test_size",  # (Tensor self, int dim) -> int
             inspec=[
                 InPosArg(ArgType.Tensor, name="self"),
@@ -56,13 +56,13 @@ class TestArgumentTupleGenerator(unittest.TestCase):
                 InPosArg(ArgType.TensorList, name="tensor_list"),
             ],
             outspec=[],
-        )
+        )                        
 
-        # With TensorConfig
-        self.verify_generator_output(ArgumentTupleGenerator(spec, TensorConfig()))
-        # Without TensorConfig
-        self.verify_generator_output(ArgumentTupleGenerator(spec))
+    def test_gen_config(self):
+        self.verify_generator_output(ArgumentTupleGenerator(self.get_spec(), TensorConfig()))
 
+    def test_gen_no_config(self):
+        self.verify_generator_output(ArgumentTupleGenerator(self.get_spec()))
 
 if __name__ == "__main__":
     unittest.main()
