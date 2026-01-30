@@ -91,7 +91,7 @@ class ArgumentTupleGenerator:
                 modified_arg.constraints = modified_arg.constraints + [dtype_constraint]
             elif arg.type.is_tensor_list():
                 dtype_constraint = cp.Dtype.NotIn(
-                    lambda deps, length, ix: config.disallow_dtypes
+                    lambda deps: config.disallow_dtypes
                 )
                 modified_arg.constraints = modified_arg.constraints + [dtype_constraint]
             elif arg.type.is_scalar_type():
