@@ -5085,6 +5085,65 @@ SpecDB = [
         ],
     ),
     Spec(
+       op="svd.default",  # (Tensor self, bool some, bool compute_uv) -> (Tensor, Tensor, Tensor)
+       inspec=[
+           InPosArg(
+               ArgType.Tensor,
+               name="self",
+               constraints=[
+                   cp.Dtype.In(lambda deps: [torch.float, torch.double]),
+                   cp.Rank.Ge(lambda deps: 2),
+               ],
+           ),
+           InPosArg(ArgType.Bool, name="some"),
+           InPosArg(ArgType.Bool, name="compute_uv"),
+       ],
+       outspec=[
+           OutArg(ArgType.Tensor, name="U"),
+           OutArg(ArgType.Tensor, name="S"),
+           OutArg(ArgType.Tensor, name="V"),
+       ],
+    ),
+    Spec(
+       op="linalg_svd.default",  # (Tensor A, bool full_matrices=True, str? driver=None) -> (Tensor U, Tensor S, Tensor Vh)
+       inspec=[
+           InPosArg(
+               ArgType.Tensor,
+               name="A",
+               constraints=[
+                   # Support both real and complex dtypes
+                   cp.Dtype.In(lambda deps: [
+                       torch.float32, torch.float64,
+                       torch.complex64, torch.complex128
+                   ]),
+                   # Matrix or batch of matrices
+                   cp.Rank.Ge(lambda deps: 2),
+                   # Last two dimensions must be >= 1 (valid matrix)
+                   cp.Size.Ge(lambda deps, r, d: 1 if d >= r - 2 else None),
+               ],
+           ),
+           InPosArg(
+               ArgType.Bool,
+               name="full_matrices",
+           ),
+           InKwArg(
+               ArgType.StringOpt,
+               name="driver",
+               # Optional: can be "gesvd", "gesvdj", "gesvda"
+               #
+               # Driver is only available if CUDA is available.
+               constraints=[
+                   cp.Value.In(lambda deps: ["gesvd", "gesvdj", "gesvda"] if torch.cuda.is_available() else []),
+               ],
+           ),
+       ],
+       outspec=[
+           OutArg(ArgType.Tensor, name="U"),
+           OutArg(ArgType.Tensor, name="S"),
+           OutArg(ArgType.Tensor, name="Vh"),
+       ],
+    ),    
+    Spec(
         op="t_copy.default",  # (Tensor self) -> Tensor
         inspec=[
             InPosArg(
