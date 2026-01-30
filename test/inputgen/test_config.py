@@ -4,6 +4,7 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
+from sympy import false
 import unittest
 
 import torch
@@ -81,12 +82,21 @@ class TestTensorConfigIntegration(unittest.TestCase):
         # Force permutation to be applied
         config = TensorConfig(permuted=True).set_probability(1.0)
         generator = ArgumentGenerator(meta_arg_3d, config=config)
-        tensor = generator.gen()
 
-        self.assertIsNotNone(tensor)
-        self.assertEqual(tensor.shape, (2, 3, 4))
-        self.assertEqual(tensor.dtype, torch.float32)
-        self.assertNotEqual(tensor.dim_order(), (0, 1, 2))
+        shuffled: bool = False
+        # Trying more than once as depending on other unit tests, shuffle 
+        # may return the same order as the original tensor.
+        for _ in range(10):
+            tensor = generator.gen()
+
+            self.assertIsNotNone(tensor)
+            self.assertEqual(tensor.shape, (2, 3, 4))
+            self.assertEqual(tensor.dtype, torch.float32)
+            if tensor.dim_order() != (0, 1, 2):
+                shuffled = True
+                break
+
+        self.assertTrue(shuffled, "Tensor was not shuffled")
 
     def test_strided_tensor_generation(self):
         """Test that ALLOW_STRIDED condition affects tensor generation."""
