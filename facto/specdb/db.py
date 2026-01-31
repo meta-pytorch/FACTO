@@ -5085,6 +5085,71 @@ SpecDB = [
         ],
     ),
     Spec(
+       op="linalg_solve_triangular.default",  # (Tensor A, Tensor B, *, bool upper, bool left=True, bool unitriangular=False) -> Tensor
+       inspec=[
+           InPosArg(
+               ArgType.Tensor,
+               name="A",
+               deps=[1, 3], # B, left
+               constraints=[
+                   # Same dtype as A
+                   cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                   # Matrix or batch of matrices
+                   cp.Rank.Ge(lambda deps: 2),
+                   # Must be square: A.size(-1) == A.size(-2)
+                   # Fix both last dimensions to same value to ensure square matrix
+                   # cp.Size.Eq(lambda deps, r, d: 8 if d >= r - 2 else None),
+                   # B.size(-2) must equal A.size(-1) for left=True (simplified: assume left=True)
+                   # For simplicity, match the last two dims with A
+                   cp.Size.Eq(
+                       lambda deps, r, d: (
+                           fn.safe_size(deps[0], -2 if deps[1] else -1)
+                           if d == r - 2 or d == r - 1
+                           else None
+                       )
+                   ),
+                   # Batch dimensions must be broadcastable with B
+                   cp.Size.In(
+                       lambda deps, r, d: (
+                           fn.broadcast_with(deps[0].shape[:-2], r - 2, d)
+                           if d < r - 2
+                           else None
+                       )
+                   ),
+               ],
+           ),
+           InPosArg(
+               ArgType.Tensor,
+               name="B",
+               constraints=[
+                   # Support both real and complex dtypes
+                   cp.Dtype.In(lambda deps: [
+                       torch.float32, torch.float64,
+                       torch.complex64, torch.complex128
+                   ]),
+                   # Must be at least 2D (matrix or batch of matrices)
+                   cp.Rank.Ge(lambda deps: 2),
+               ],
+           ),
+           InKwArg(
+               ArgType.Bool,
+               name="upper",
+               # Required: whether A is upper triangular
+           ),
+           InKwArg(
+               ArgType.Bool,
+               name="left",
+               # Default True: solve AX = B (True) or XA = B (False)
+           ),
+           InKwArg(
+               ArgType.Bool,
+               name="unitriangular",
+               # Default False: whether to assume diagonal is 1
+           ),
+       ],
+       outspec=[OutArg(ArgType.Tensor, name="X")],
+    ),
+    Spec(
         op="t_copy.default",  # (Tensor self) -> Tensor
         inspec=[
             InPosArg(
@@ -5170,6 +5235,49 @@ SpecDB = [
         outspec=[
             OutArg(ArgType.Tensor),
         ],
+    ),
+    Spec(
+       op="triangular_solve.default",  # (Tensor self, Tensor A, bool upper=True, bool transpose=False, bool unitriangular=False) -> (Tensor solution, Tensor cloned_coefficient)
+       inspec=[
+           InPosArg(
+               ArgType.Tensor,
+               name="self",
+               constraints=[
+                   cp.Dtype.In(lambda deps: [torch.float, torch.double]),
+                   cp.Rank.Ge(lambda deps: 2),
+               ],
+           ),
+           InPosArg(
+               ArgType.Tensor,
+               name="A",
+               deps=[0],
+               constraints=[
+                   cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                   cp.Rank.Ge(lambda deps: 2),
+                   cp.Size.Eq(
+                       lambda deps, r, d: (
+                           fn.safe_size(deps[0], -2)
+                           if d == r - 1 or d == r - 2
+                           else None
+                       )
+                   ),
+                   cp.Size.In(
+                       lambda deps, r, d: (
+                           fn.broadcast_with(deps[0].shape, r, d)
+                           if d != r - 1 and d != r - 2
+                           else None
+                       )
+                   ),
+               ],
+           ),
+           InPosArg(ArgType.Bool, name="upper"),
+           InPosArg(ArgType.Bool, name="transpose"),
+           InPosArg(ArgType.Bool, name="unitriangular"),
+       ],
+       outspec=[
+           OutArg(ArgType.Tensor, name="solution"),
+           OutArg(ArgType.Tensor, name="cloned_coefficient"),
+       ],
     ),
     Spec(
         op="tril.default",  # (Tensor self, int diagonal=0) -> Tensor
