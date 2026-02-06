@@ -1299,54 +1299,54 @@ SpecDB = [
         ],
     ),
     Spec(
-       op="binary_cross_entropy_backward.default",  # (Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor
-       inspec=[
-           InPosArg(
-               ArgType.Tensor,
-               name="grad_output",
-               constraints=[
-                   cp.Dtype.In(lambda deps: dt._floating),
-               ],
-           ),
-           InPosArg(
-               ArgType.Tensor,
-               name="self",
-               deps=[0],
-               constraints=[
-                   cp.Dtype.Eq(lambda deps: deps[0].dtype),
-                   cp.Rank.Eq(lambda deps: len(deps[0].shape)),
-                   cp.Size.Eq(lambda deps, r, d: deps[0].shape[d]),
-               ],
-           ),
-           InPosArg(
-               ArgType.Tensor,
-               name="target",
-               deps=[0, 1],
-               constraints=[
-                   cp.Dtype.Eq(lambda deps: deps[0].dtype),
-                   cp.Rank.Eq(lambda deps: len(deps[1].shape)),
-                   cp.Size.Eq(lambda deps, r, d: deps[1].shape[d]),
-               ],
-           ),
-           InPosArg(
-               ArgType.TensorOpt,
-               name="weight",
-               deps=[0, 1],
-               constraints=[
-                   cp.Dtype.Eq(lambda deps: deps[0].dtype),
-                   cp.Rank.Eq(lambda deps: len(deps[1].shape)),
-                   cp.Size.Eq(lambda deps, r, d: deps[1].shape[d]),
-               ],
-           ),
-           InPosArg(
-               ArgType.Int,
-               name="reduction",
-               constraints=[
-                   cp.Value.In(lambda deps: [0, 1, 2]),
-               ],
-           ),
-       ],
-       outspec=[OutArg(ArgType.Tensor)],
+        op="binary_cross_entropy_backward.default",  # (Tensor grad_output, Tensor self, Tensor target, Tensor? weight=None, int reduction=Mean) -> Tensor
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="grad_output",
+                constraints=[
+                    cp.Dtype.In(lambda deps: dt._floating),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="self",
+                deps=[0],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Rank.Eq(lambda deps: len(deps[0].shape)),
+                    cp.Size.Eq(lambda deps, r, d: deps[0].shape[d]),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="target",
+                deps=[0, 1],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Rank.Eq(lambda deps: len(deps[1].shape)),
+                    cp.Size.Eq(lambda deps, r, d: deps[1].shape[d]),
+                ],
+            ),
+            InPosArg(
+                ArgType.TensorOpt,
+                name="weight",
+                deps=[0, 1],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Rank.Eq(lambda deps: len(deps[1].shape)),
+                    cp.Size.Eq(lambda deps, r, d: deps[1].shape[d]),
+                ],
+            ),
+            InPosArg(
+                ArgType.Int,
+                name="reduction",
+                constraints=[
+                    cp.Value.In(lambda deps: [0, 1, 2]),
+                ],
+            ),
+        ],
+        outspec=[OutArg(ArgType.Tensor)],
     ),
     Spec(
         op="bitwise_and.Scalar",  # (Tensor self, Scalar other) -> Tensor
