@@ -56,13 +56,16 @@ class TestArgumentTupleGenerator(unittest.TestCase):
                 InPosArg(ArgType.TensorList, name="tensor_list"),
             ],
             outspec=[],
-        )                        
+        )
 
     def test_gen_config(self):
-        self.verify_generator_output(ArgumentTupleGenerator(self.get_spec(), TensorConfig()))
+        self.verify_generator_output(
+            ArgumentTupleGenerator(self.get_spec(), TensorConfig())
+        )
 
     def test_gen_no_config(self):
         self.verify_generator_output(ArgumentTupleGenerator(self.get_spec()))
+
 
 if __name__ == "__main__":
     unittest.main()

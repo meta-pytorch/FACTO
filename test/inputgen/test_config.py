@@ -84,7 +84,7 @@ class TestTensorConfigIntegration(unittest.TestCase):
         generator = ArgumentGenerator(meta_arg_3d, config=config)
 
         shuffled: bool = False
-        # Trying more than once as depending on other unit tests, shuffle 
+        # Trying more than once as depending on other unit tests, shuffle
         # may return the same order as the original tensor.
         for _ in range(10):
             tensor = generator.gen()
