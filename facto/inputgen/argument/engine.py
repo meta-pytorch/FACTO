@@ -167,7 +167,7 @@ class MetaArg:
             strval = f"{self.dtype} {self.structure}"
         else:
             strval = str(self.value)
-        return f"{self.argtype} {strval}"
+        return f"ArgType.{self.argtype.name} {strval}"
 
     def length(self):
         if self.argtype.is_list():
