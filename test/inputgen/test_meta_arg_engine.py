@@ -80,6 +80,27 @@ class TestMetaArgEngine(unittest.TestCase):
         self.assertEqual(len(ms), 1)
         self.assertEqual(str(ms[0]), "ArgType.IntOpt None")
 
+    def test_tensor_list(self):
+        constraints = [
+            cp.Length.Eq(lambda deps: 4),
+            cp.Rank.Eq(lambda deps, length, ix: 2 if ix < 2 else 1),
+            cp.Size.Eq(lambda deps, length, ix, r, d: 32 if d == 0 else None),
+            cp.Size.Eq(
+                lambda deps, length, ix, r, d: 8 if ix == 0 and d == 1 else None
+            ),
+            cp.Size.Eq(
+                lambda deps, length, ix, r, d: 16 if ix == 1 and d == 1 else None
+            ),
+        ]
+        deps = []
+        outarg = False
+
+        engine = MetaArgEngine(outarg, ArgType.TensorList, constraints, deps, True)
+        ms = list(engine.gen(None))
+        self.assertEqual(len(ms), 1)
+        m = ms[0]
+        self.assertEqual(m.structure, ((32, 8), (32, 16), (32,), (32,)))
+
 
 if __name__ == "__main__":
     unittest.main()
