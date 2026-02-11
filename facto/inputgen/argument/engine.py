@@ -4,7 +4,7 @@
 # This source code is licensed under the license found in the
 # LICENSE file in the root directory of this source tree.
 
-from typing import Any, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Sequence, Tuple, Union
 
 import torch
 from facto.inputgen.argument.type import ArgType
@@ -132,6 +132,8 @@ class MetaArg:
             raise ValueError("Only optional argtypes can have optional instances")
 
         if self.argtype.is_tensor_list():
+            if isinstance(self.dtype, torch.dtype):
+                self.dtype = [self.dtype for _ in self.structure]
             if len(self.structure) != len(self.dtype):
                 raise ValueError(
                     "Structure and dtype must be same length when tensor list"
