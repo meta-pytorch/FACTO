@@ -5452,6 +5452,45 @@ SpecDB = [
         ],
     ),
     Spec(
+        op="upsample_bicubic2d.default",  # (Tensor input, int[2] output_size, bool align_corners, float? scales_h=None, float? scales_w=None) -> Tensor
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="input",
+                constraints=[
+                    cp.Dtype.In(lambda deps: dt._floating),
+                    cp.Rank.Eq(lambda deps: 4),
+                    # All dimensions must be >= 1 (non-empty tensor required)
+                    cp.Size.Ge(lambda deps, r, d: 1),
+                ],
+            ),
+            InPosArg(
+                ArgType.Shape,
+                name="output_size",
+                constraints=[
+                    cp.Length.Eq(lambda deps: 2),
+                    cp.Value.Ge(lambda deps, length, ix: 1),
+                ],
+            ),
+            InPosArg(ArgType.Bool, name="align_corners"),
+            InPosArg(
+                ArgType.FloatOpt,
+                name="scales_h",
+                constraints=[
+                    cp.Value.Gt(lambda deps: 0.0),
+                ],
+            ),
+            InPosArg(
+                ArgType.FloatOpt,
+                name="scales_w",
+                constraints=[
+                    cp.Value.Gt(lambda deps: 0.0),
+                ],
+            ),
+        ],
+        outspec=[OutArg(ArgType.Tensor)],
+    ),
+    Spec(
         op="upsample_bilinear2d.vec",  # (Tensor input, SymInt[]? output_size, bool align_corners, float[]? scale_factors) -> Tensor
         inspec=[
             InPosArg(
