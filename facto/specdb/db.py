@@ -2633,6 +2633,30 @@ SpecDB = [
         outspec=[OutArg(ArgType.Tensor)],
     ),
     Spec(
+        op="hardshrink.default",  # (Tensor self, Scalar lambd=0.5) -> Tensor
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="self",
+                constraints=[
+                    cp.Dtype.In(lambda deps: dt._floating),
+                ],
+            ),
+            InPosArg(
+                ArgType.Scalar,
+                name="lambd",
+                constraints=[
+                    cp.Value.Ge(lambda deps, dtype: 0),
+                    # Upper bound to prevent overflow when converting to float16
+                    #
+                    # Default value for lambd in this operator is 0.5
+                    cp.Value.Le(lambda deps, dtype: 100),
+                ],
+            ),
+        ],
+        outspec=[OutArg(ArgType.Tensor)],
+    ),
+    Spec(
         op="hardtanh.default",  # (Tensor self, Scalar min_val=-1, Scalar max_val=1) -> Tensor
         inspec=[
             InPosArg(
