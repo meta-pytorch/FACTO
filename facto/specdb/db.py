@@ -5159,6 +5159,30 @@ SpecDB = [
         ],
     ),
     Spec(
+        op="special_zeta.default",  # (Tensor self, Tensor other) -> Tensor
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="self",
+                constraints=[
+                    cp.Dtype.In(lambda deps: [torch.float, torch.double]),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="other",
+                deps=[0],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Size.In(
+                        lambda deps, r, d: fn.broadcast_with(deps[0].shape, r, d)
+                    ),
+                ],
+            ),
+        ],
+        outspec=[OutArg(ArgType.Tensor)],
+    ),
+    Spec(
         op="svd.default",  # (Tensor self, bool some, bool compute_uv) -> (Tensor, Tensor, Tensor)
         inspec=[
             InPosArg(
