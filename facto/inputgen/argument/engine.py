@@ -48,7 +48,7 @@ class StructuralEngine:
             return [Attribute.VALUE]
 
     def gen_structure_with_depth_and_length(
-        self, depth: int, length: int, focus: Attribute
+        self, args: tuple, depth: int, length: int, focus: Attribute
     ):
         if length == 0:
             yield ()
@@ -57,7 +57,7 @@ class StructuralEngine:
         attr = self._hierarchy[-(depth + 1)]
 
         if attr in self.gen_list_mode:
-            yield from self.gen_structure_with_depth(depth, focus, length)
+            yield from self.gen_structure_with_depth(args, depth, focus, length)
             return
 
         focus_ixs = (
@@ -67,9 +67,13 @@ class StructuralEngine:
             values = [()]
             for ix in range(length):
                 if ix == focus_ix:
-                    elements = self.gen_structure_with_depth(depth, focus, length, ix)
+                    elements = self.gen_structure_with_depth(
+                        args, depth, focus, length, ix
+                    )
                 else:
-                    elements = self.gen_structure_with_depth(depth, None, length, ix)
+                    elements = self.gen_structure_with_depth(
+                        args, depth, None, length, ix
+                    )
                 new_values = []
                 for elem in elements:
                     new_values += [t + (elem,) for t in values]
@@ -78,6 +82,7 @@ class StructuralEngine:
 
     def gen_structure_with_depth(
         self,
+        args: tuple,
         depth: int,
         focus: Attribute,
         length: Optional[int] = None,
@@ -86,14 +91,9 @@ class StructuralEngine:
         attr = self._hierarchy[-(depth + 1)]
 
         if ix is not None:
-            args = (self.deps, length, ix)
+            args += (length, ix)
         elif length is not None:
-            args = (
-                self.deps,
-                length,
-            )
-        else:
-            args = (self.deps,)
+            args += (length,)
 
         values = AttributeEngine(attr, self.constraints, self.valid, self.argtype).gen(
             focus, *args
@@ -103,11 +103,13 @@ class StructuralEngine:
             if depth == 0:
                 yield v
             else:
-                yield from self.gen_structure_with_depth_and_length(depth - 1, v, focus)
+                yield from self.gen_structure_with_depth_and_length(
+                    args, depth - 1, v, focus
+                )
 
     def gen(self, focus: Attribute):
         depth = len(self._hierarchy) - 1
-        yield from self.gen_structure_with_depth(depth, focus)
+        yield from self.gen_structure_with_depth((self.deps,), depth, focus)
 
 
 class MetaArg:
