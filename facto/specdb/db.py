@@ -5899,9 +5899,7 @@ SpecDB = [
                 name="is_causal",
                 deps=[3],
                 constraints=[
-                    cp.Value.Eq(
-                        lambda deps: False if deps[0] is not None else None
-                    ),
+                    cp.Value.Eq(lambda deps: False if deps[0] is not None else None),
                 ],
             ),
             InPosArg(
