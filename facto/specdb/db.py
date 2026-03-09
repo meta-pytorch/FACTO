@@ -5814,6 +5814,148 @@ SpecDB = [
         ],
     ),
     Spec(
+        op="_scaled_dot_product_attention_math.default",  # (Tensor query, Tensor key, Tensor value, Tensor? attn_mask=None, float dropout_p=0.0, bool is_causal=False, Tensor? dropout_mask=None, *, float? scale=None, bool enable_gqa=False) -> (Tensor, Tensor)
+        inspec=[
+            InPosArg(
+                ArgType.Tensor,
+                name="query",
+                constraints=[
+                    cp.Dtype.In(lambda deps: dt._floating),
+                    cp.Rank.Ge(lambda deps: 2),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="key",
+                deps=[0],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Rank.Eq(lambda deps: deps[0].dim()),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], d) if d < r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], r - 1) if d == r - 1 else None
+                        )
+                    ),
+                ],
+            ),
+            InPosArg(
+                ArgType.Tensor,
+                name="value",
+                deps=[0, 1],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                    cp.Rank.Eq(lambda deps: deps[0].dim()),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], d) if d < r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[1], r - 2) if d == r - 2 else None
+                        )
+                    ),
+                ],
+            ),
+            InPosArg(
+                ArgType.TensorOpt,
+                name="attn_mask",
+                deps=[0, 1],
+                constraints=[
+                    cp.Dtype.In(lambda deps: [deps[0].dtype, torch.bool]),
+                    cp.Rank.Eq(lambda deps: deps[0].dim()),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], d) if d < r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], r - 2) if d == r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[1], r - 2) if d == r - 1 else None
+                        )
+                    ),
+                ],
+            ),
+            InPosArg(
+                ArgType.Float,
+                name="dropout_p",
+                constraints=[
+                    cp.Value.Ge(lambda deps: 0.0),
+                    cp.Value.Lt(lambda deps: 1.0),
+                ],
+            ),
+            InPosArg(
+                ArgType.Bool,
+                name="is_causal",
+                deps=[3],
+                constraints=[
+                    cp.Value.Eq(lambda deps: False if deps[0] is not None else None),
+                ],
+            ),
+            InPosArg(
+                ArgType.TensorOpt,
+                name="dropout_mask",
+                deps=[0, 1],
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: torch.bool),
+                    cp.Rank.Eq(lambda deps: deps[0].dim()),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], d) if d < r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[0], r - 2) if d == r - 2 else None
+                        )
+                    ),
+                    cp.Size.Eq(
+                        lambda deps, r, d: (
+                            fn.safe_size(deps[1], r - 2) if d == r - 1 else None
+                        )
+                    ),
+                ],
+            ),
+            InKwArg(
+                ArgType.FloatOpt,
+                name="scale",
+            ),
+            InKwArg(
+                ArgType.Bool,
+                name="enable_gqa",
+                constraints=[
+                    cp.Value.Eq(lambda deps: False),
+                ],
+            ),
+        ],
+        outspec=[
+            OutArg(
+                ArgType.Tensor,
+                name="output",
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                ],
+            ),
+            OutArg(
+                ArgType.Tensor,
+                name="attn_weights",
+                constraints=[
+                    cp.Dtype.Eq(lambda deps: deps[0].dtype),
+                ],
+            ),
+        ],
+    ),
+    Spec(
         op="zeros.default",  # (SymInt[] size, *, ScalarType? dtype=None, Layout? layout=None, Device? device=None, bool? pin_memory=None) -> Tensor
         inspec=[
             InPosArg(
