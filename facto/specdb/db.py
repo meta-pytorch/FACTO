@@ -5231,17 +5231,13 @@ SpecDB = [
             InKwArg(
                 ArgType.StringOpt,
                 name="driver",
-                # Optional: can be "gesvd", "gesvdj", "gesvda"
-                #
-                # Driver is only available if CUDA is available.
+                # Optional: can be "gesvd", "gesvdj", "gesvda", but only for
+                # CUDA inputs. Whether CUDA is installed does not say where the
+                # generated tensors go (TensorConfig defaults to cpu, and the
+                # calibrator replays one tuple on several devices), so only
+                # generate driver=None.
                 constraints=[
-                    cp.Value.In(
-                        lambda deps: (
-                            ["gesvd", "gesvdj", "gesvda"]
-                            if torch.cuda.is_available()
-                            else []
-                        )
-                    ),
+                    cp.Value.In(lambda deps: []),
                 ],
             ),
         ],
